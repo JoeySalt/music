@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultaten</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="top-link">← Terug naar zoeken</a>
+
+        {% if error %}
+            <div class="error-box">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if artist %}
+            <div class="results-header">
+                <h1>Releases van {{ artist.title }}</h1>
+                <p>{{ releases|length }} resultaten gevonden</p>
+            </div>
+        {% endif %}
+
+        {% if releases %}
+            <div class="release-grid">
+                {% for release in releases %}
+                    <div class="release-card">
+
+                        {% if release.thumb %}
+                            <img src="{{ release.thumb }}" alt="{{ release.title }} cover" class="release-cover">
+                        {% else %}
+                            <div class="no-cover">No cover</div>
+                        {% endif %}
+
+                        <h3>{{ release.title }}</h3>
+
+                        <div class="release-meta">
+                            <span><strong>Jaar:</strong> {{ release.year if release.year else 'Onbekend' }}</span>
+                            <span><strong>Type:</strong> {{ release.type if release.type else 'Onbekend' }}</span>
+                            <span><strong>Rol:</strong> {{ release.role if release.role else 'Onbekend' }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">Geen releases gevonden.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

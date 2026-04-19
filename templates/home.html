@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyl Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <h1>Vinyl Finder</h1>
+            <p>Zoek een artiest en bekijk releases via de Discogs API.</p>
+
+            <form action="/search" method="get" class="search-form">
+                <input type="text" name="artist" placeholder="Bijv. Kanye West" required>
+                <button type="submit">Zoeken</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
