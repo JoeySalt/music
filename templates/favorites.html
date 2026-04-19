@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="app-shell">
+        <header class="masthead">
+            <a class="brand-mark" href="/" aria-label="Vinyl Finder home">
+                <span class="brand-dot"></span>
+                Vinyl Finder
+            </a>
+            <a href="/" class="top-link">&larr; Search</a>
+        </header>
+
+        <div class="results-header">
+            <p class="eyebrow">Your shelf</p>
+            <h1>Favorite albums</h1>
+        </div>
+
+        {% if favorites %}
+            <div class="release-grid">
+                {% for album in favorites %}
+                    <div class="release-card">
+                        {% if album.thumb %}
+                            <img src="{{ album.thumb }}" alt="{{ album.title }} cover" class="release-cover">
+                        {% else %}
+                            <div class="no-cover">No cover</div>
+                        {% endif %}
+
+                        <h3>{{ album.title }}</h3>
+
+                        <div class="release-meta">
+                            <span><strong>Year</strong> {{ album.year if album.year else 'Unknown' }}</span>
+                            <span><strong>Type</strong> {{ album.type if album.type else 'Unknown' }}</span>
+                            <span><strong>Role</strong> {{ album.role if album.role else 'Unknown' }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">No favorite albums yet.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

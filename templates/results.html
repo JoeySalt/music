@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultaten</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <a href="{{ url_for('favorites') }}" class="top-link">Favorites</a>
+
 </head>
 <body>
     <main class="app-shell">
@@ -41,9 +43,13 @@
             </div>
         {% endif %}
 
+  
+
         {% if releases %}
             <div class="release-grid">
                 {% for release in releases %}
+
+                
                     <div class="release-card">
 
                         {% if release.thumb %}
@@ -59,6 +65,24 @@
                             <span><strong>Type</strong> {{ release.type if release.type else 'Unknown' }}</span>
                             <span><strong>Role</strong> {{ release.role if release.role else 'Unknown' }}</span>
                         </div>
+
+                            <form action="{{ url_for('toggle_favorite') }}" method="post">
+                                <input type="hidden" name="release_id" value="{{ release.id }}">
+                                <input type="hidden" name="title" value="{{ release.title }}">
+                                <input type="hidden" name="year" value="{{ release.year if release.year else '' }}">
+                                <input type="hidden" name="type" value="{{ release.type if release.type else '' }}">
+                                <input type="hidden" name="role" value="{{ release.role if release.role else '' }}">
+                                <input type="hidden" name="thumb" value="{{ release.thumb if release.thumb else '' }}">
+
+                                <button type="submit" class="favorite-button">
+                                    {% if release.id|string in favorite_ids %}
+                                        &#9733;
+                                    {% else %}
+                                        &#9734;
+                                    {% endif %}
+                                </button>
+                            </form>
+
                     </div>
                 {% endfor %}
             </div>

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vinyl Finder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <a href="{{ url_for('favorites') }}" class="top-link">Favorites</a>
+
 </head>
 <body>
     <main class="app-shell home-shell">
@@ -19,7 +21,7 @@
         <section class="search-stage">
             <div class="search-copy">
                 <p class="eyebrow">Catalog desk</p>
-                <h1>Dig through artist releases without the clutter.</h1>
+       1         <h1>Dig through artist releases without the clutter.</h1>
 
                 <form action="/search" method="get" class="search-form">
                     <label class="sr-only" for="artist-search">Artist name</label>
