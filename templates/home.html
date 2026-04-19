@@ -7,14 +7,42 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <section class="hero">
-            <h1>Vinyl Finder</h1>
-            <p>Zoek een artiest en bekijk releases via de Discogs API.</p>
+    <main class="app-shell home-shell">
+        <header class="masthead">
+            <a class="brand-mark" href="/" aria-label="Vinyl Finder home">
+                <span class="brand-dot"></span>
+                Vinyl Finder
+            </a>
+            <span class="source-label">Discogs catalog search</span>
+        </header>
 
-            <form action="/search" method="get" class="search-form">
-                <input type="text" name="artist" placeholder="Bijv. Kanye West" required>
-                <button type="submit">Zoeken</button>
+        <section class="search-stage">
+            <div class="search-copy">
+                <p class="eyebrow">Catalog desk</p>
+                <h1>Dig through artist releases without the clutter.</h1>
+
+                <form action="/search" method="get" class="search-form">
+                    <label class="sr-only" for="artist-search">Artist name</label>
+                    <input id="artist-search" type="text" name="artist" placeholder="Kendrick Lamar" required>
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+
+            <div class="record-visual" aria-hidden="true">
+                <div class="sleeve">
+                    <span class="sleeve-code">VF-01</span>
+                    <span class="sleeve-title">RELEASE INDEX</span>
+                    <span class="sleeve-line"></span>
+                    <span class="sleeve-line short"></span>
+                </div>
+                <div class="record">
+                    <span class="record-label"></span>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
             </form>
         </section>
     </div>

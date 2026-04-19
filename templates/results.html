@@ -7,8 +7,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <a href="/" class="top-link">← Terug naar zoeken</a>
+    <main class="app-shell">
+        <header class="masthead">
+            <a class="brand-mark" href="/" aria-label="Vinyl Finder home">
+                <span class="brand-dot"></span>
+                Vinyl Finder
+            </a>
+            <a href="/" class="top-link">&larr; New search</a>
+        </header>
 
         {% if error %}
             <div class="error-box">
@@ -18,8 +24,20 @@
 
         {% if artist %}
             <div class="results-header">
-                <h1>Releases van {{ artist.title }}</h1>
-                <p>{{ releases|length }} resultaten gevonden</p>
+                <p class="eyebrow">Artist archive</p>
+                <h1>{{ artist.title }}</h1>
+
+                {% if pagination %}
+                    <div class="result-summary">
+                        <span>{{ pagination.items }} total releases</span>
+                        <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+                        <span>{{ pagination.per_page }} per page</span>
+                    </div>
+                {% else %}
+                    <div class="result-summary">
+                        <span>{{ releases|length }} results found</span>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
 
@@ -37,16 +55,42 @@
                         <h3>{{ release.title }}</h3>
 
                         <div class="release-meta">
-                            <span><strong>Jaar:</strong> {{ release.year if release.year else 'Onbekend' }}</span>
-                            <span><strong>Type:</strong> {{ release.type if release.type else 'Onbekend' }}</span>
-                            <span><strong>Rol:</strong> {{ release.role if release.role else 'Onbekend' }}</span>
+                            <span><strong>Year</strong> {{ release.year if release.year else 'Unknown' }}</span>
+                            <span><strong>Type</strong> {{ release.type if release.type else 'Unknown' }}</span>
+                            <span><strong>Role</strong> {{ release.role if release.role else 'Unknown' }}</span>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+
+            {% if pagination and pagination.pages > 1 %}
+                <nav class="pagination" aria-label="Resultaten pagina's">
+                    {% if pagination.page > 1 %}
+                        <a class="pagination-button" href="{{ url_for('search', artist=artist_name, page=pagination.page - 1) }}">&larr; Previous</a>
+                    {% else %}
+                        <span class="pagination-button is-disabled" aria-disabled="true">&larr; Previous</span>
+                    {% endif %}
+
+                    <div class="pagination-pages">
+                        {% for page_number in page_numbers %}
+                            {% if page_number == pagination.page %}
+                                <span class="pagination-page is-current" aria-current="page">{{ page_number }}</span>
+                            {% else %}
+                                <a class="pagination-page" href="{{ url_for('search', artist=artist_name, page=page_number) }}">{{ page_number }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    {% if pagination.page < pagination.pages %}
+                        <a class="pagination-button" href="{{ url_for('search', artist=artist_name, page=pagination.page + 1) }}">Next &rarr;</a>
+                    {% else %}
+                        <span class="pagination-button is-disabled" aria-disabled="true">Next &rarr;</span>
+                    {% endif %}
+                </nav>
+            {% endif %}
         {% else %}
-            <p class="empty-state">Geen releases gevonden.</p>
+            <p class="empty-state">No releases found.</p>
         {% endif %}
-    </div>
+    </main>
 </body>
 </html>
