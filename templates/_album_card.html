@@ -1,0 +1,43 @@
+<div class="release-card{% if is_recommendation %} recommendation-card{% endif %}">
+    {% if album.thumb %}
+        <img src="{{ album.thumb }}" alt="{{ album.title }} cover" class="release-cover">
+    {% else %}
+        <div class="no-cover">No cover</div>
+    {% endif %}
+
+    <h3>{{ album.title }}</h3>
+
+    <div class="release-meta">
+        <span><strong>Year</strong> {{ album.year if album.year else 'Unknown' }}</span>
+        <span><strong>Type</strong> {{ album.type if album.type else 'Unknown' }}</span>
+        <span><strong>Role</strong> {{ album.role if album.role else 'Unknown' }}</span>
+    </div>
+
+    {% if show_favorite_button %}
+        {% set card_artist_id = album.artist_id if album.artist_id else fallback_artist.id if fallback_artist else '' %}
+        {% set card_artist_title = album.artist_title if album.artist_title else fallback_artist.title if fallback_artist else '' %}
+
+        <form action="{{ url_for('toggle_favorite') }}" method="post" class="favorite-form">
+            <input type="hidden" name="release_id" value="{{ album.id }}">
+            <input type="hidden" name="title" value="{{ album.title }}">
+            <input type="hidden" name="year" value="{{ album.year if album.year else '' }}">
+            <input type="hidden" name="type" value="{{ album.type if album.type else '' }}">
+            <input type="hidden" name="role" value="{{ album.role if album.role else '' }}">
+            <input type="hidden" name="thumb" value="{{ album.thumb if album.thumb else '' }}">
+            <input type="hidden" name="artist_id" value="{{ card_artist_id }}">
+            <input type="hidden" name="artist_title" value="{{ card_artist_title }}">
+
+            <button
+                type="submit"
+                class="favorite-button"
+                aria-label="{% if album.id|string in favorite_ids %}Remove from favorites{% else %}Add to favorites{% endif %}"
+            >
+                {% if album.id|string in favorite_ids %}
+                    &#9733;
+                {% else %}
+                    &#9734;
+                {% endif %}
+            </button>
+        </form>
+    {% endif %}
+</div>

@@ -78,6 +78,14 @@ a:hover {
     font-weight: 700;
 }
 
+.masthead-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .brand-dot {
     width: 12px;
     height: 12px;
@@ -267,6 +275,40 @@ a:hover {
     padding: 8px 10px;
 }
 
+.recommendation-section {
+    margin: 0 0 34px;
+    padding: 26px 0 30px;
+    border-top: 3px solid var(--line);
+    border-bottom: 3px solid var(--line);
+}
+
+.favorites-recommendations {
+    margin-top: 42px;
+}
+
+.catalog-section {
+    margin-bottom: 34px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.section-heading .eyebrow {
+    margin-bottom: 0;
+}
+
+.section-heading h2 {
+    max-width: 620px;
+    font-size: clamp(1.7rem, 4vw, 3.2rem);
+    line-height: 0.95;
+    text-align: right;
+}
+
 .error-box,
 .empty-state {
     border: 3px solid var(--line);
@@ -298,6 +340,25 @@ a:hover {
 .release-card:hover {
     transform: translate(-2px, -2px);
     box-shadow: 9px 9px 0 var(--line);
+}
+
+.recommendation-card {
+    position: relative;
+    background: #fff4c7;
+}
+
+.recommendation-card::before {
+    content: "REC";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    border: 2px solid var(--line);
+    background: var(--red);
+    color: var(--white);
+    box-shadow: 3px 3px 0 var(--line);
+    padding: 4px 7px;
+    font: 700 0.72rem "IBM Plex Mono", monospace;
 }
 
 .release-cover,
@@ -354,6 +415,27 @@ a:hover {
 .release-meta strong {
     color: var(--muted);
     text-transform: uppercase;
+}
+
+.favorite-form {
+    border-top: 2px solid var(--line);
+}
+
+.favorite-button {
+    width: 100%;
+    min-height: 46px;
+    border: 0;
+    background: var(--yellow);
+    color: var(--ink);
+    font: 700 1.35rem "IBM Plex Mono", monospace;
+    cursor: pointer;
+}
+
+.favorite-button:hover,
+.favorite-button:focus-visible {
+    background: var(--red);
+    color: var(--white);
+    outline: none;
 }
 
 .pagination {
@@ -434,6 +516,10 @@ a:hover {
         flex-direction: column;
     }
 
+    .masthead-actions {
+        justify-content: flex-start;
+    }
+
     .search-stage {
         grid-template-columns: 1fr;
         gap: 26px;
@@ -476,5 +562,14 @@ a:hover {
 
     .release-grid {
         grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .section-heading h2 {
+        text-align: left;
     }
 }

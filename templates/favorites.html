@@ -24,25 +24,32 @@
         {% if favorites %}
             <div class="release-grid">
                 {% for album in favorites %}
-                    <div class="release-card">
-                        {% if album.thumb %}
-                            <img src="{{ album.thumb }}" alt="{{ album.title }} cover" class="release-cover">
-                        {% else %}
-                            <div class="no-cover">No cover</div>
-                        {% endif %}
-
-                        <h3>{{ album.title }}</h3>
-
-                        <div class="release-meta">
-                            <span><strong>Year</strong> {{ album.year if album.year else 'Unknown' }}</span>
-                            <span><strong>Type</strong> {{ album.type if album.type else 'Unknown' }}</span>
-                            <span><strong>Role</strong> {{ album.role if album.role else 'Unknown' }}</span>
-                        </div>
-                    </div>
+                    {% set fallback_artist = none %}
+                    {% set show_favorite_button = false %}
+                    {% set is_recommendation = false %}
+                    {% include "_album_card.html" %}
                 {% endfor %}
             </div>
         {% else %}
             <p class="empty-state">No favorite albums yet.</p>
+        {% endif %}
+
+        {% if recommendations %}
+            <section class="recommendation-section favorites-recommendations" aria-labelledby="favorite-recommendations-title">
+                <div class="section-heading">
+                    <p class="eyebrow">Next crate</p>
+                    <h2 id="favorite-recommendations-title">Recommended from your favorites</h2>
+                </div>
+
+                <div class="release-grid recommendation-grid">
+                    {% for album in recommendations %}
+                        {% set fallback_artist = none %}
+                        {% set show_favorite_button = true %}
+                        {% set is_recommendation = true %}
+                        {% include "_album_card.html" %}
+                    {% endfor %}
+                </div>
+            </section>
         {% endif %}
     </main>
 </body>

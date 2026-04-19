@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultaten</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <a href="{{ url_for('favorites') }}" class="top-link">Favorites</a>
-
 </head>
 <body>
     <main class="app-shell">
@@ -15,7 +13,10 @@
                 <span class="brand-dot"></span>
                 Vinyl Finder
             </a>
-            <a href="/" class="top-link">&larr; New search</a>
+            <nav class="masthead-actions" aria-label="Primary">
+                <a href="{{ url_for('favorites') }}" class="top-link">Favorites</a>
+                <a href="/" class="top-link">&larr; New search</a>
+            </nav>
         </header>
 
         {% if error %}
@@ -24,73 +25,91 @@
             </div>
         {% endif %}
 
-        {% if artist %}
+        {% if artist or search_query %}
             <div class="results-header">
-                <p class="eyebrow">Artist archive</p>
-                <h1>{{ artist.title }}</h1>
+                <p class="eyebrow">Catalog search</p>
+                <h1>{{ artist.title if artist else search_query }}</h1>
 
-                {% if pagination %}
-                    <div class="result-summary">
+                <div class="result-summary">
+                    {% if catalog_results %}
+                        <span>{{ catalog_results|length }} album/song matches</span>
+                    {% endif %}
+
+                    {% if pagination %}
                         <span>{{ pagination.items }} total releases</span>
                         <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
                         <span>{{ pagination.per_page }} per page</span>
-                    </div>
-                {% else %}
-                    <div class="result-summary">
+                    {% elif releases %}
                         <span>{{ releases|length }} results found</span>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
         {% endif %}
 
-  
+        {% if recommendations %}
+            <section class="recommendation-section" aria-labelledby="search-recommendations-title">
+                <div class="section-heading">
+                    <p class="eyebrow">Recommended picks</p>
+                    <h2 id="search-recommendations-title">
+                        {% if favorite_ids %}
+                            Based on favorites and this search
+                        {% else %}
+                            Strong picks from this search
+                        {% endif %}
+                    </h2>
+                </div>
+
+                <div class="release-grid recommendation-grid">
+                    {% for album in recommendations %}
+                        {% set fallback_artist = artist %}
+                        {% set show_favorite_button = true %}
+                        {% set is_recommendation = true %}
+                        {% include "_album_card.html" %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        {% if catalog_results %}
+            <section class="catalog-section" aria-labelledby="catalog-results-title">
+                <div class="section-heading">
+                    <p class="eyebrow">Albums &amp; songs</p>
+                    <h2 id="catalog-results-title">Direct matches for "{{ search_query }}"</h2>
+                </div>
+
+                <div class="release-grid">
+                    {% for album in catalog_results %}
+                        {% set fallback_artist = none %}
+                        {% set show_favorite_button = true %}
+                        {% set is_recommendation = false %}
+                        {% include "_album_card.html" %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
 
         {% if releases %}
+            <section class="catalog-section" aria-labelledby="artist-results-title">
+                <div class="section-heading">
+                    <p class="eyebrow">Artist archive</p>
+                    <h2 id="artist-results-title">Releases by {{ artist.title }}</h2>
+                </div>
+
             <div class="release-grid">
                 {% for release in releases %}
-
-                
-                    <div class="release-card">
-
-                        {% if release.thumb %}
-                            <img src="{{ release.thumb }}" alt="{{ release.title }} cover" class="release-cover">
-                        {% else %}
-                            <div class="no-cover">No cover</div>
-                        {% endif %}
-
-                        <h3>{{ release.title }}</h3>
-
-                        <div class="release-meta">
-                            <span><strong>Year</strong> {{ release.year if release.year else 'Unknown' }}</span>
-                            <span><strong>Type</strong> {{ release.type if release.type else 'Unknown' }}</span>
-                            <span><strong>Role</strong> {{ release.role if release.role else 'Unknown' }}</span>
-                        </div>
-
-                            <form action="{{ url_for('toggle_favorite') }}" method="post">
-                                <input type="hidden" name="release_id" value="{{ release.id }}">
-                                <input type="hidden" name="title" value="{{ release.title }}">
-                                <input type="hidden" name="year" value="{{ release.year if release.year else '' }}">
-                                <input type="hidden" name="type" value="{{ release.type if release.type else '' }}">
-                                <input type="hidden" name="role" value="{{ release.role if release.role else '' }}">
-                                <input type="hidden" name="thumb" value="{{ release.thumb if release.thumb else '' }}">
-
-                                <button type="submit" class="favorite-button">
-                                    {% if release.id|string in favorite_ids %}
-                                        &#9733;
-                                    {% else %}
-                                        &#9734;
-                                    {% endif %}
-                                </button>
-                            </form>
-
-                    </div>
+                    {% set album = release %}
+                    {% set fallback_artist = artist %}
+                    {% set show_favorite_button = true %}
+                    {% set is_recommendation = false %}
+                    {% include "_album_card.html" %}
                 {% endfor %}
             </div>
+            </section>
 
             {% if pagination and pagination.pages > 1 %}
                 <nav class="pagination" aria-label="Resultaten pagina's">
                     {% if pagination.page > 1 %}
-                        <a class="pagination-button" href="{{ url_for('search', artist=artist_name, page=pagination.page - 1) }}">&larr; Previous</a>
+                        <a class="pagination-button" href="{{ url_for('search', q=search_query, page=pagination.page - 1) }}">&larr; Previous</a>
                     {% else %}
                         <span class="pagination-button is-disabled" aria-disabled="true">&larr; Previous</span>
                     {% endif %}
@@ -100,19 +119,19 @@
                             {% if page_number == pagination.page %}
                                 <span class="pagination-page is-current" aria-current="page">{{ page_number }}</span>
                             {% else %}
-                                <a class="pagination-page" href="{{ url_for('search', artist=artist_name, page=page_number) }}">{{ page_number }}</a>
+                                <a class="pagination-page" href="{{ url_for('search', q=search_query, page=page_number) }}">{{ page_number }}</a>
                             {% endif %}
                         {% endfor %}
                     </div>
 
                     {% if pagination.page < pagination.pages %}
-                        <a class="pagination-button" href="{{ url_for('search', artist=artist_name, page=pagination.page + 1) }}">Next &rarr;</a>
+                        <a class="pagination-button" href="{{ url_for('search', q=search_query, page=pagination.page + 1) }}">Next &rarr;</a>
                     {% else %}
                         <span class="pagination-button is-disabled" aria-disabled="true">Next &rarr;</span>
                     {% endif %}
                 </nav>
             {% endif %}
-        {% else %}
+        {% elif not catalog_results %}
             <p class="empty-state">No releases found.</p>
         {% endif %}
     </main>

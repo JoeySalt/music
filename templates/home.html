@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vinyl Finder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <a href="{{ url_for('favorites') }}" class="top-link">Favorites</a>
-
 </head>
 <body>
     <main class="app-shell home-shell">
@@ -15,17 +13,20 @@
                 <span class="brand-dot"></span>
                 Vinyl Finder
             </a>
-            <span class="source-label">Discogs catalog search</span>
+            <nav class="masthead-actions" aria-label="Primary">
+                <a href="{{ url_for('favorites') }}" class="top-link">Favorites</a>
+                <span class="source-label">Discogs catalog search</span>
+            </nav>
         </header>
 
         <section class="search-stage">
             <div class="search-copy">
                 <p class="eyebrow">Catalog desk</p>
-       1         <h1>Dig through artist releases without the clutter.</h1>
+                <h1>Dig through artists, albums and songs without the clutter.</h1>
 
                 <form action="/search" method="get" class="search-form">
-                    <label class="sr-only" for="artist-search">Artist name</label>
-                    <input id="artist-search" type="text" name="artist" placeholder="Kendrick Lamar" required>
+                    <label class="sr-only" for="catalog-search">Artist, album or song</label>
+                    <input id="catalog-search" type="text" name="q" placeholder="Kendrick Lamar, DAMN., HUMBLE." required>
                     <button type="submit">Search</button>
                 </form>
             </div>
@@ -43,10 +44,5 @@
             </div>
         </section>
     </main>
-</body>
-</html>
-            </form>
-        </section>
-    </div>
 </body>
 </html>
